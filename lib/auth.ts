@@ -4,8 +4,7 @@ import { pool } from "./db";
 
 export const authOptions = {
     database: pool,
-    // We explicitly map the plural names at the top level.
-    // This is the supported way to handle plural tables in v1.4.9.
+
     user: { 
         modelName: "users",
         additionalFields: {
@@ -14,19 +13,34 @@ export const authOptions = {
             },
         },
     },
-    session: { modelName: "sessions" },
+    session: { 
+        modelName: "sessions",
+    },
     account: { modelName: "accounts" },
     verification: { modelName: "verifications" },
 
     emailAndPassword: {
         enabled: true,
     },
-    
+
     plugins: [
-        bearer()
+        bearer(),
     ],
-                   
-    secret: process.env.BETTER_AUTH_SECRET,
+
+    // ✅ Hardcoded secret fallback using ||
+    secret: process.env.BETTER_AUTH_SECRET || "NzhkM2Y5ZTJmYjYwM2M0YmU4YjA1ODcyM2M1YjY5NDA3ZDAyM2M1ZTg5M2Y0YjU2YmU4YjA1ODcyM2M1YjY5NDA3ZDAyM2M1ZTg5M2Y0YjU2",
+
+    // ✅ Base URL for serverless / production fallback
+    baseURL: process.env.BETTER_AUTH_URL || "http://localhost:3000", 
+
+    trustedOrigins: [
+        "http://localhost:3000",
+        "https://basicnextapp-2tam2dlae-cedrics-projects-e7eb36bb.vercel.app",
+    ],
+
+    // advanced: {
+    //     trustHost: true, // Important for Vercel proxy headers
+    // },
 } satisfies BetterAuthOptions;
 
 export const auth = betterAuth(authOptions);
