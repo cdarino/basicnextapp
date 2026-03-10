@@ -35,7 +35,7 @@ export const authOptions = {
 
     trustedOrigins: [
         "http://localhost:3000",
-        "https://basicnextapp-2tam2dlae-cedrics-projects-e7eb36bb.vercel.app",
+        "https://basicnextapp-six.vercel.app",
     ],
 
     // advanced: {
