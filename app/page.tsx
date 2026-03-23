@@ -41,34 +41,42 @@ export default function LoginPage() {
       setLoading(true);
   
       // 2. Use the cleaned variables for the sign-in
-      await signIn.email({ 
-          email: cleanEmail, 
-          password: cleanPassword 
-      }, {
-           onSuccess: async () => {
-               const res = await getSession();
-               const session = "data" in res ? res.data : res;
-               if (session?.user?.active === false) {
-                   await showMessage("Your account is inactive. Please contact the administrator.", {
-                       okColor: "bg-red-600 hover:bg-red-700"
-                   });
-                   await signOut();
-                   setLoading(false);
-                   return;
-               }
-               router.push("/dashboard");
-           },
-          onError: async () => {
-              setLoading(false);
-              
-              await showMessage("Invalid email or password.", {
-                  okColor: "bg-red-600 hover:bg-red-700"
-              });
-  
-              passwordRef.current?.focus();
-              passwordRef.current?.select();
-          }
-      });
+      try {
+          await signIn.email({ 
+              email: cleanEmail, 
+              password: cleanPassword 
+          }, {
+              onSuccess: async () => {
+                  const res = await getSession();
+                  const session = "data" in res ? res.data : res;
+                  if (session?.user?.active === false) {
+                      await showMessage("Your account is inactive. Please contact the administrator.", {
+                          okColor: "bg-red-600 hover:bg-red-700"
+                      });
+                      await signOut();
+                      setLoading(false);
+                      return;
+                  }
+                  router.push("/dashboard");
+              },
+              onError: async () => {
+                  setLoading(false);
+                  
+                  await showMessage("Invalid email or password.", {
+                      okColor: "bg-red-600 hover:bg-red-700"
+                  });
+      
+                  passwordRef.current?.focus();
+                  passwordRef.current?.select();
+              }
+          });
+      } catch (error) {
+          console.error("Login request failed:", error);
+          setLoading(false);
+          await showMessage("Unable to reach authentication server. Check your URL/env settings and try again.", {
+              okColor: "bg-red-600 hover:bg-red-700"
+          });
+      }
     };
     
     return (
