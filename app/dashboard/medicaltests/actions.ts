@@ -21,7 +21,16 @@ export interface MedicalTestRow {
 }
 
 function toNullableNumber(value: FormDataEntryValue | null): number | null {
-  const parsed = Number(value);
+  if (value === null) {
+    return null;
+  }
+
+  const raw = String(value).trim();
+  if (raw === "") {
+    return null;
+  }
+
+  const parsed = Number(raw);
   return Number.isFinite(parsed) ? parsed : null;
 }
 
