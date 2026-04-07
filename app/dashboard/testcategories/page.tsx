@@ -4,13 +4,33 @@ import {
   getTestCategories,
   updateTestCategory,
 } from "./actions";
+import ExportTableButtons from "@/components/ExportTableButtons";
 
 export default async function TestCategoriesPage() {
   const categories = await getTestCategories();
+  const exportColumns = [
+    { key: "rowNumber", label: "Row #" },
+    { key: "name", label: "Category Name" },
+    { key: "description", label: "Description" },
+  ];
+
+  const exportRows = categories.map((category, index) => ({
+    rowNumber: index + 1,
+    name: category.name,
+    description: category.description ?? "",
+  }));
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Medical Test Categories Management</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold text-gray-900">Medical Test Categories Management</h1>
+        <ExportTableButtons
+          title="Medical Test Categories"
+          fileName="MedicalTestCategories"
+          columns={exportColumns}
+          rows={exportRows}
+        />
+      </div>
 
       <section className="rounded-lg border bg-white p-4 shadow-sm">
         <h2 className="mb-3 text-lg font-semibold">Add Category</h2>

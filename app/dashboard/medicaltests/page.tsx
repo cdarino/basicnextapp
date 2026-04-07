@@ -6,6 +6,7 @@ import {
   getUomLookup,
   updateMedicalTest,
 } from "./actions";
+import ExportTableButtons from "@/components/ExportTableButtons";
 
 export default async function MedicalTestsPage() {
   const [tests, uoms, categories] = await Promise.all([
@@ -14,9 +15,37 @@ export default async function MedicalTestsPage() {
     getCategoryLookup(),
   ]);
 
+  const exportColumns = [
+    { key: "rowNumber", label: "Row #" },
+    { key: "name", label: "Test Name" },
+    { key: "description", label: "Description" },
+    { key: "category", label: "Category" },
+    { key: "unit", label: "Unit" },
+    { key: "normalmin", label: "Normal Min" },
+    { key: "normalmax", label: "Normal Max" },
+  ];
+
+  const exportRows = tests.map((test, index) => ({
+    rowNumber: index + 1,
+    name: test.name,
+    description: test.description ?? "",
+    category: test.categoryname,
+    unit: test.uomname,
+    normalmin: test.normalmin ?? "",
+    normalmax: test.normalmax ?? "",
+  }));
+
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Medical Tests Management</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold text-gray-900">Medical Tests Management</h1>
+        <ExportTableButtons
+          title="Medical Tests"
+          fileName="MedicalTests"
+          columns={exportColumns}
+          rows={exportRows}
+        />
+      </div>
 
       <section className="rounded-lg border bg-white p-4 shadow-sm">
         <h2 className="mb-3 text-lg font-semibold">Add Medical Test</h2>

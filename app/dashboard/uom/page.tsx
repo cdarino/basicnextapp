@@ -4,13 +4,33 @@ import {
   getUoms,
   updateUom,
 } from "./actions";
+import ExportTableButtons from "@/components/ExportTableButtons";
 
 export default async function UomPage() {
   const uoms = await getUoms();
+  const exportColumns = [
+    { key: "rowNumber", label: "Row #" },
+    { key: "name", label: "UOM Name" },
+    { key: "description", label: "Description" },
+  ];
+
+  const exportRows = uoms.map((uom, index) => ({
+    rowNumber: index + 1,
+    name: uom.name,
+    description: uom.description ?? "",
+  }));
 
   return (
     <div className="space-y-6">
-      <h1 className="text-2xl font-bold text-gray-900">Units of Measure Management</h1>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <h1 className="text-2xl font-bold text-gray-900">Units of Measure Management</h1>
+        <ExportTableButtons
+          title="Units of Measure"
+          fileName="UnitsOfMeasure"
+          columns={exportColumns}
+          rows={exportRows}
+        />
+      </div>
 
       <section className="rounded-lg border bg-white p-4 shadow-sm">
         <h2 className="mb-3 text-lg font-semibold">Add UOM</h2>
